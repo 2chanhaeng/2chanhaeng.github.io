@@ -6,7 +6,7 @@ export default function Home() {
       <h1>2chanhaeng</h1>
       <p>이사 중...</p>
       <h1>
-        <a href="https://chomu.dev/chomu37.github.io/">기존 블로그</a>
+        <a href="https://chomu.dev/chomu37.github.io/">기존 블로그로 이동</a>
       </h1>
     </main>
   );
