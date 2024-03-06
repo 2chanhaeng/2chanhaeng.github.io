@@ -13,16 +13,15 @@ function Posts() {
   const posts = getAllChildrenDirectoryRecursive("app/posts")
     .filter(exceptAppPosts)
     .filter(hasPageFile)
-    .map((file) => {
-      return (
-        <div key={file}>
-          <a href={file.replace("app", "")}>{file}</a>
-        </div>
-      );
-    });
+    .map((file) => <LinkToPost key={file} path={file} />);
   return <div>{posts}</div>;
 }
 
+function LinkToPost({ path }: { path: string }) {
+  return <Link href={path}>{getLastOfPath(path)}</Link>;
+}
+
+const getLastOfPath = (path: string) => path.split("/").at(-1);
 const exceptAppPosts = (path: string) => path !== "app/posts";
 const hasPageFile = (path: string): boolean =>
   fs.existsSync(`${path}/page.tsx`) || fs.existsSync(`${path}/page.mdx`);
