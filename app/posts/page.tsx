@@ -1,4 +1,5 @@
 import fs from "fs";
+import Link from "next/link";
 
 export default function PostsPage() {
   return (
@@ -10,11 +11,8 @@ export default function PostsPage() {
 
 function Posts() {
   const posts = getAllChildrenDirectoryRecursive("app/posts")
-    .filter((path) => path !== "app/posts")
-    .filter(
-      (path: string): boolean =>
-        fs.existsSync(`${path}/page.tsx`) || fs.existsSync(`${path}/page.mdx`)
-    )
+    .filter(exceptAppPosts)
+    .filter(hasPageFile)
     .map((file) => {
       return (
         <div key={file}>
@@ -22,15 +20,22 @@ function Posts() {
         </div>
       );
     });
-
   return <div>{posts}</div>;
 }
 
-function getAllChildrenDirectoryRecursive(directoryPath: string): string[] {
-  const allChildren = fs
-    .readdirSync(directoryPath)
-    .map((child) => `${directoryPath}/${child}`)
-    .filter((path) => fs.statSync(path).isDirectory())
-    .map((path) => getAllChildrenDirectoryRecursive(path));
-  return [directoryPath].concat(allChildren.flat());
+const exceptAppPosts = (path: string) => path !== "app/posts";
+const hasPageFile = (path: string): boolean =>
+  fs.existsSync(`${path}/page.tsx`) || fs.existsSync(`${path}/page.mdx`);
+
+function getAllChildrenDirectoryRecursive(path: string): string[] {
+  const children = fs
+    .readdirSync(path)
+    .map(addParent(path))
+    .filter(isDirectory)
+    .map(getAllChildrenDirectoryRecursive)
+    .flat();
+  return [path].concat(children);
 }
+
+const addParent = (parent: string) => (child: string) => `${parent}/${child}`;
+const isDirectory = (path: string) => fs.statSync(path).isDirectory();
