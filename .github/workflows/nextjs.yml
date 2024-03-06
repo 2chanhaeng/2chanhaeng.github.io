@@ -77,10 +77,6 @@ jobs:
         run: |
           rm -f next.config.js
           ${{ steps.detect-package-manager.outputs.runner }} next build
-      - name: Show files
-        run: |
-          ls -l
-          pwd
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
