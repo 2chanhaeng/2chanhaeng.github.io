@@ -11,7 +11,7 @@ const nextConfig = {
 
 export default withMDX({
   options: {
-    remarkPlugins: [rehypeKatex],
-    rehypePlugins: [remarkMath, remarkFrontmatter],
+    rehypePlugins: [rehypeKatex],
+    remarkPlugins: [remarkMath, remarkFrontmatter],
   },
 })(nextConfig);
