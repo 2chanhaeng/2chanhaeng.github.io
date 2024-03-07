@@ -21,6 +21,9 @@
       "@/*": ["./*"]
     }
   },
+  "mdx": {
+    "plugins": ["remark-math", "remark-frontmatter", "remark-katex"]
+  },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
