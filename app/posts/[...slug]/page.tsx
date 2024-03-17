@@ -3,14 +3,13 @@ import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/api";
 import { CMS_NAME } from "@/lib/constants";
 import markdownToHtml from "@/lib/markdownToHtml";
-import Alert from "@/app/_components/alert";
-import Container from "@/app/_components/container";
-import Header from "@/app/_components/header";
-import { PostBody } from "@/app/_components/post-body";
-import { PostHeader } from "@/app/_components/post-header";
+import Alert from "@/components/alert";
+import Container from "@/components/container";
+import Header from "@/components/header";
+import { PostBody } from "@/components/post-body";
+import { PostHeader } from "@/components/post-header";
 
 export default async function Post({ params }: Params) {
-  console.log("params.slug", params.slug);
   const post = getPostBySlug(params.slug);
 
   if (!post) {
@@ -45,8 +44,6 @@ type Params = {
 };
 
 export function generateMetadata({ params }: Params): Metadata {
-  console.log("params.slug@generateMetadata", params.slug);
-
   const post = getPostBySlug(params.slug);
 
   if (!post) {
@@ -69,10 +66,5 @@ export async function generateStaticParams() {
 
   return posts.map((post) => ({
     slug: post.slug.split("/").map(encodeURI),
-    _: console.log(
-      "post.slug@generateStaticParams",
-      post.slug,
-      encodeURI(post.slug)
-    ),
   }));
 }
