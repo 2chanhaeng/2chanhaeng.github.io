@@ -1,12 +1,11 @@
-import { parseISO, format } from "date-fns";
-
 type Props = {
   dateString: string;
 };
 
 const DateFormatter = ({ dateString }: Props) => {
-  const date = parseISO(dateString);
-  return <time dateTime={dateString}>{format(date, "LLLL	d, yyyy")}</time>;
+  const date = new Date(dateString);
+  const showDate = new Intl.DateTimeFormat().format(date);
+  return <time dateTime={dateString}>{showDate}</time>;
 };
 
 export default DateFormatter;
