@@ -1,13 +1,26 @@
-import styles from "./page.module.css";
+import Container from "@/app/_components/container";
+import { HeroPost } from "@/app/_components/hero-post";
+import { Intro } from "@/app/_components/intro";
+import { MoreStories } from "@/app/_components/more-stories";
+import { getAllPosts } from "@/lib/api";
 
-export default function Home() {
+export default function Index() {
+  const [heroPost, ...morePosts] = getAllPosts();
+
   return (
-    <main className={styles.main}>
-      <h1>2chanhaeng</h1>
-      <p>이사 중...</p>
-      <h1>
-        <a href="https://chomu.dev/chomu37.github.io/">기존 블로그로 이동</a>
-      </h1>
+    <main>
+      <Container>
+        <Intro />
+        <HeroPost
+          title={heroPost.title}
+          coverImage={heroPost.coverImage}
+          date={heroPost.date}
+          author={heroPost.author}
+          slug={heroPost.slug}
+          excerpt={heroPost.excerpt}
+        />
+        {morePosts.length > 0 && <MoreStories posts={morePosts} />}
+      </Container>
     </main>
   );
 }
