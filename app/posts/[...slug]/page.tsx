@@ -10,6 +10,7 @@ import { PostBody } from "@/app/_components/post-body";
 import { PostHeader } from "@/app/_components/post-header";
 
 export default async function Post({ params }: Params) {
+  console.log("params.slug", params.slug);
   const post = getPostBySlug(params.slug);
 
   if (!post) {
@@ -39,11 +40,13 @@ export default async function Post({ params }: Params) {
 
 type Params = {
   params: {
-    slug: string;
+    slug: string[];
   };
 };
 
 export function generateMetadata({ params }: Params): Metadata {
+  console.log("params.slug@generateMetadata", params.slug);
+
   const post = getPostBySlug(params.slug);
 
   if (!post) {
@@ -65,7 +68,11 @@ export async function generateStaticParams() {
   const posts = getAllPosts();
 
   return posts.map((post) => ({
-    slug: encodeURI(post.slug),
-    _: console.log("post.slug", post.slug),
+    slug: post.slug.split("/").map(encodeURI),
+    _: console.log(
+      "post.slug@generateStaticParams",
+      post.slug,
+      encodeURI(post.slug)
+    ),
   }));
 }
