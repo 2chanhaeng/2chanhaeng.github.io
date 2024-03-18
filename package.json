@@ -5,6 +5,7 @@
   "homepage": "https://chomu.dev",
   "scripts": {
     "dev": "next dev",
+    "serve": "next build && npx serve out/",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
