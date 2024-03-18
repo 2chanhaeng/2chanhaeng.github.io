@@ -2,7 +2,10 @@ import fs from "fs";
 import matter from "gray-matter";
 import { join } from "path";
 import { Post } from "@/interfaces/post";
-import { defaultAuthor as author } from "@/lib/constants";
+import {
+  DEFAULT_AUTHOR as author,
+  DEFAULT_IMAGE as ogImage,
+} from "@/lib/constants";
 
 const postsDirectory = join(process.cwd(), "_posts");
 
@@ -26,14 +29,14 @@ export function getPostSlugs() {
   );
 }
 
-export function getPostBySlug(slugs: string[]) {
+export function getPostBySlug(slugs: string[]): Post {
   slugs.push(slugs.pop()!.replace(/\.mdx$/, ""));
   const realSlug = slugs.map(decodeURIComponent).join("/");
   const fullPath = join(postsDirectory, `${realSlug}.mdx`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 
-  return { ...data, slug: realSlug, content, author } as Post;
+  return { ...data, slug: realSlug, content, author, ogImage } as Post;
 }
 
 export function getAllPosts(): Post[] {
