@@ -5,6 +5,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import remarkToc from "remark-toc";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -21,7 +22,11 @@ export default withMDX({
       rehypeSlug,
       [rehypeAutolinkHeadings, { behavior: "append" }],
     ],
-    remarkPlugins: [remarkMath, remarkFrontmatter],
+    remarkPlugins: [
+      remarkMath,
+      remarkFrontmatter,
+      [remarkToc, { heading: "(table[ -]of[ -])?contents?|toc|목차" }],
+    ],
     experimental: { mdxRs: true },
   },
 })(nextConfig);
