@@ -22,3 +22,8 @@ pre {
 pre [data-line] {
   padding: 0 1rem;
 }
+
+span.icon-link::before {
+  content: "🔗";
+  margin-left: 0.5rem;
+}
