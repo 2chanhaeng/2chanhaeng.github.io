@@ -7,6 +7,7 @@ import remarkFrontmatter from "remark-frontmatter";
 const nextConfig = {
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   output: "export",
+  images: { unoptimized: true },
 };
 
 export default withMDX({
