@@ -14,5 +14,6 @@ export default withMDX({
   options: {
     rehypePlugins: [rehypeKatex],
     remarkPlugins: [remarkMath, remarkFrontmatter],
+    experimental: { mdxRs: true },
   },
 })(nextConfig);
