@@ -38,6 +38,7 @@ export function getPostBySlug(slugs: string[]): Post {
   const { data, content } = matter(fileContents);
   const date = data.date ?? slugs.toSpliced(3).join("-");
   const title = data.title ?? slugs.at(-1)!;
+  const description = data.description ?? content.slice(0, 150) + "...";
 
   return {
     slug,
@@ -47,6 +48,7 @@ export function getPostBySlug(slugs: string[]): Post {
     date,
     coverImage,
     title,
+    description,
     ...data,
   } as Post;
 }
