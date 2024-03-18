@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nanum_Gothic } from "next/font/google";
 import "./globals.css";
+import { BLOG_NAME } from "@/lib/constants";
 
 const nanum = Nanum_Gothic({
   weight: ["400", "700"],
@@ -8,7 +9,7 @@ const nanum = Nanum_Gothic({
 });
 
 export const metadata: Metadata = {
-  title: "Chomu's Blog",
+  title: BLOG_NAME,
   description: "A blog about programming and web development.",
 };
 

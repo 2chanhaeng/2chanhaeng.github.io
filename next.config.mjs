@@ -7,11 +7,13 @@ import remarkFrontmatter from "remark-frontmatter";
 const nextConfig = {
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   output: "export",
+  images: { unoptimized: true },
 };
 
 export default withMDX({
   options: {
     rehypePlugins: [rehypeKatex],
     remarkPlugins: [remarkMath, remarkFrontmatter],
+    experimental: { mdxRs: true },
   },
 })(nextConfig);
