@@ -37,6 +37,7 @@ export function getPostBySlug(slugs: string[]): Post {
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
   const date = data.date ?? slugs.toSpliced(3).join("-");
+  const title = data.title ?? slugs.at(-1)!;
 
   return {
     slug,
@@ -45,6 +46,7 @@ export function getPostBySlug(slugs: string[]): Post {
     ogImage,
     date,
     coverImage,
+    title,
     ...data,
   } as Post;
 }
