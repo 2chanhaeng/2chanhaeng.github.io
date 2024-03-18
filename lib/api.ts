@@ -5,6 +5,7 @@ import { Post } from "@/interfaces/post";
 import {
   DEFAULT_AUTHOR as author,
   DEFAULT_IMAGE as ogImage,
+  DEFAULT_COVER_IMAGE as coverImage,
 } from "@/lib/constants";
 
 const postsDirectory = join(process.cwd(), "_posts");
@@ -36,7 +37,14 @@ export function getPostBySlug(slugs: string[]): Post {
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 
-  return { ...data, slug: realSlug, content, author, ogImage } as Post;
+  return {
+    slug,
+    content,
+    author,
+    ogImage,
+    coverImage,
+    ...data,
+  } as Post;
 }
 
 export function getAllPosts(): Post[] {

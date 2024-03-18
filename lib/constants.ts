@@ -7,3 +7,4 @@ export const DEFAULT_AUTHOR = {
   picture: "/assets/blog/authors/chomu.png",
 };
 export const DEFAULT_IMAGE = { url: "/assets/blog/default-cover.jpg" };
+export const DEFAULT_COVER_IMAGE = "/assets/blog/default-cover.jpg";
