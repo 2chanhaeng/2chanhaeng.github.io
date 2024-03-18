@@ -36,12 +36,14 @@ export function getPostBySlug(slugs: string[]): Post {
   const fullPath = join(postsDirectory, `${realSlug}.mdx`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
+  const date = data.date ?? slugs.toSpliced(3).join("-");
 
   return {
     slug,
     content,
     author,
     ogImage,
+    date,
     coverImage,
     ...data,
   } as Post;
