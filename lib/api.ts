@@ -32,8 +32,8 @@ export function getPostSlugs() {
 
 export function getPostBySlug(slugs: string[]): Post {
   slugs.push(slugs.pop()!.replace(/\.mdx$/, ""));
-  const realSlug = slugs.map(decodeURIComponent).join("/");
-  const fullPath = join(postsDirectory, `${realSlug}.mdx`);
+  const slug = slugs.map(decodeURIComponent).join("/");
+  const fullPath = join(postsDirectory, `${slug}.mdx`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
   const date = data.date ?? slugs.toSpliced(3).join("-");
