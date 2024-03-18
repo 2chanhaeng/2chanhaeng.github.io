@@ -1,5 +1,4 @@
 import Container from "@/components/container";
-import cn from "classnames";
 import { REPOSITORY_URL } from "@/lib/constants";
 
 type Props = {
