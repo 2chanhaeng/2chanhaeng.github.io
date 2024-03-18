@@ -1,6 +1,6 @@
 import Container from "@/components/container";
-import { EXAMPLE_PATH } from "@/lib/constants";
 import cn from "classnames";
+import { REPOSITORY_URL } from "@/lib/constants";
 
 type Props = {
   preview?: boolean;
@@ -26,7 +26,6 @@ const Alert = ({ preview }: Props) => {
             <>
               The source code for this blog is{" "}
               <a
-                href={`https://github.com/vercel/next.js/tree/canary/examples/${EXAMPLE_PATH}`}
                 className="underline hover:text-blue-600 duration-200 transition-colors"
               >
                 available on GitHub
@@ -34,6 +33,7 @@ const Alert = ({ preview }: Props) => {
               .
             </>
           )}
+            href={REPOSITORY_URL}
         </div>
       </Container>
     </div>
