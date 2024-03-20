@@ -5,5 +5,5 @@
   align-items: center;
   padding: 6rem;
   box-sizing: border-box;
-  min-height: calc(100svh - 16px); // body margin 8px top and bottom
+  min-height: calc(100svh - 16px); /* body margin 8px top and bottom */
 }
