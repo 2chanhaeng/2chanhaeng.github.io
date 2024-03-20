@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  max-width: 40rem;
+}
+
 a {
   color: inherit;
   text-decoration: none;
