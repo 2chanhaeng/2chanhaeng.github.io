@@ -6,7 +6,9 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <Intro />
-      <Link href="/posts">Posts</Link>
+      <Link prefetch href="/posts" className="text-4xl">
+        Posts &rarr;
+      </Link>
     </main>
   );
 }
