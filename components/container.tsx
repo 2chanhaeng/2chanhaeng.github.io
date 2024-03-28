@@ -2,8 +2,6 @@ type Props = {
   children?: React.ReactNode;
 };
 
-const Container = ({ children }: Props) => {
-  return <div className="container mx-auto px-5">{children}</div>;
-};
-
-export default Container;
+export default function Container({ children }: Props) {
+  return <main className="container mx-auto px-5">{children}</main>;
+}
