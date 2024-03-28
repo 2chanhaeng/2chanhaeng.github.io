@@ -12,6 +12,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         height={400}
         style={{ width: "100vw" }}
         layout="responsive"
+        // @ts-expect-error
         alt=""
         {...(props as ImageProps)}
       />
