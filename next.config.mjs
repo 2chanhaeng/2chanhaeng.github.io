@@ -2,6 +2,7 @@ import withMDX from "@next/mdx";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import remarkFrontmatter from "remark-frontmatter";
+import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -25,6 +26,7 @@ export default withMDX({
     remarkPlugins: [
       remarkMath,
       remarkFrontmatter,
+      [remarkMdxFrontmatter, { name: "metadata" }],
       [remarkToc, { heading: "(table[ -]of[ -])?contents?|toc|목차" }],
     ],
     experimental: { mdxRs: true },
