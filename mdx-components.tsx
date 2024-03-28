@@ -8,8 +8,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h1: ({ children }) => <PostTitle>{children}</PostTitle>,
     img: (props) => (
       <Image
+        width={600}
+        height={400}
         style={{ width: "100vw" }}
         layout="responsive"
+        alt=""
         {...(props as ImageProps)}
       />
     ),
