@@ -9,7 +9,10 @@ const nanum = Nanum_Gothic({
 });
 
 export const metadata: Metadata = {
-  title: BLOG_NAME,
+  title: {
+    template: `%s | ${BLOG_NAME}`,
+    default: BLOG_NAME,
+  },
   description: "A blog about programming and web development.",
 };
 
