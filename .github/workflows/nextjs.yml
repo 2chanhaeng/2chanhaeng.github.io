@@ -86,9 +86,7 @@ jobs:
           https://api.github.com/repos/2chanhaeng/blog-posts/tarball/main | tar zxf - -C ./app/posts --strip-components 1
 
       - name: Build with Next.js
-        run: |
-          rm -f next.config.js
-          ${{ steps.detect-package-manager.outputs.runner }} next build
+        run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
