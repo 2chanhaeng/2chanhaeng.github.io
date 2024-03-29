@@ -3,7 +3,7 @@ article>h1~* {
 }
 
 p,
-ul,
+:not(li)>ul,
 ol,
 blockquote,
 pre,
