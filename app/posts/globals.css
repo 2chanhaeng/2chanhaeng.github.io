@@ -10,3 +10,7 @@ pre,
 table {
   margin-bottom: 1rem;
 }
+
+li {
+  margin-left: 0.5rem;
+}
