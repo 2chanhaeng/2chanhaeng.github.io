@@ -1,21 +1,14 @@
-import { BLOG_NAME } from "@/lib/constants";
-import Link from "next/link";
+import Intro from "./Intro";
+import Posts from "./Posts";
+import GitHub from "./GitHub";
 
 export default function Header() {
   return (
-    <header>
-      <h2 className="text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight mb-20 mt-8">
-        <Link
-          href="/"
-          className="hover:underline"
-          style={{
-            opacity: 1,
-          }}
-        >
-          {BLOG_NAME}
-        </Link>
-        .
-      </h2>
+    <header className="flex items-center gap-2 m-4">
+      <Intro />
+      &gt;
+      <Posts />
+      <GitHub />
     </header>
   );
 }
