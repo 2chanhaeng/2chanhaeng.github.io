@@ -1,4 +1,4 @@
-import withMDX from "@next/mdx";
+// import withMDX from "@next/mdx";
 // import rehypeKatex from "rehype-katex";
 // import remarkMath from "remark-math";
 // import remarkFrontmatter from "remark-frontmatter";
@@ -16,8 +16,8 @@ const nextConfig = {
 };
 
 /** @type {import('next').NextConfig} */
-const mdxConfig = withMDX({})(nextConfig);
-export default mdxConfig; //withMDX({
+// const mdxConfig = withMDX({})(nextConfig);
+export default nextConfig; //withMDX({
 // options: {
 //   rehypePlugins: [
 // rehypeKatex,
