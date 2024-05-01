@@ -29,6 +29,5 @@ export default withMDX({
       [remarkMdxFrontmatter, { name: "metadata" }],
       [remarkToc, { heading: "(table[ -]of[ -])?contents?|toc|목차" }],
     ],
-    experimental: { mdxRs: true },
   },
 })(nextConfig);
