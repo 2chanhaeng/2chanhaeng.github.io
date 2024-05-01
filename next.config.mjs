@@ -18,16 +18,16 @@ const nextConfig = {
 export default withMDX({
   options: {
     rehypePlugins: [
-      rehypeKatex,
-      rehypePrettyCode,
-      rehypeSlug,
-      [rehypeAutolinkHeadings, { behavior: "append" }],
+      // rehypeKatex,
+      // rehypePrettyCode,
+      // rehypeSlug,
+      // [rehypeAutolinkHeadings, { behavior: "append" }],
     ],
     remarkPlugins: [
       remarkMath,
       remarkFrontmatter,
-      [remarkMdxFrontmatter, { name: "metadata" }],
-      [remarkToc, { heading: "(table[ -]of[ -])?contents?|toc|목차" }],
+      // [remarkMdxFrontmatter, { name: "metadata" }],
+      // [remarkToc, { heading: "(table[ -]of[ -])?contents?|toc|목차" }],
     ],
   },
 })(nextConfig);
