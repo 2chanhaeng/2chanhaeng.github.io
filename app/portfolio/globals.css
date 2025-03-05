@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  main {
+    @apply min-h-dvh grid grid-cols-1 md:grid-cols-3 gap-8 md:divide-x;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply text-center;
+  }
+  h1 {
+    @apply text-8xl font-extrabold;
+  }
+  h2 {
+    @apply text-4xl font-bold;
+  }
+  h3 {
+    @apply text-2xl font-bold;
+  }
+  a {
+    @apply opacity-100;
+  }
+  svg {
+    @apply inline;
+  }
+}
