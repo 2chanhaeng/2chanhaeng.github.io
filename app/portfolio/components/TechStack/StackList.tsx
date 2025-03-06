@@ -14,7 +14,7 @@ export default function StackList({ name, Icon, badges }: StackListProps) {
         {Icon && <Icon />}
         {name}
       </h3>
-      <ul className="flex flex-wrap gap-2 items-baseline break-normal even:col-span-2 lg:even:col-span-1">
+      <ul className="flex flex-wrap gap-2 items-baseline break-normal col-span-2 lg:col-span-1">
         {badges.map((badge) => (
           <li key={StackBadge.name}>
             <StackBadge {...badge} />
