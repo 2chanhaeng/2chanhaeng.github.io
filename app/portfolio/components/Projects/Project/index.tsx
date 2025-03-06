@@ -37,7 +37,7 @@ export default function Project({
   teams,
 }: ProjectProps) {
   return (
-    <Card>
+    <Card className="hover:scale-105 transition-transform">
       <CardHeader>
         <CardTitle>{name}</CardTitle>
         <CardDescription>
