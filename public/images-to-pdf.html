@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>이미지 → PDF 생성기</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+          font-family: sans-serif;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          /* align-items: center; */
+          justify-content: center;
+        }
+
+        .drop-zone {
+          border: 3px dashed #aaa;
+          padding: 40px;
+          text-align: center;
+          border-radius: 10px;
+          cursor: pointer;
+          background-color: #f9f9f9;
+          color: #666;
+          transition: background-color 0.3s ease;
+        }
+
+        .drop-zone.dragover {
+          background-color: #eef;
+        }
+
+        .preview-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-top: 20px;
+        }
+
+        .preview {
+          position: relative;
+          width: 150px;
+          height: 150px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          overflow: hidden;
+        }
+
+        .preview img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .remove-btn {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          background: rgba(255, 0, 0, 0.6);
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          cursor: pointer;
+          font-size: 16px;
+        }
+
+        #generateBtn {
+          margin-top: 20px;
+          margin-bottom: 20px;
+          padding: 10px 20px;
+          font-size: 16px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+          &:hover{
+            background-color: #0056b3;
+          }
+
+        }
+
+        .modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        flex-direction: column;
+        & .remove-close-btn-container {
+          display: flex;
+          width: 90vw;
+          padding: 0 5vw;
+          justify-content: center;
+          gap: 8px;
+          & > *{
+            display: inline;
+            border-radius: 8px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 20px;
+            cursor: pointer;
+            height: 32px;
+            border: none;
+            color: white;
+            padding: 4px 8px;
+          }
+          & .modal-remove-btn {
+            flex:1;
+            background: rgba(255, 0, 0, 0.6);
+            &:hover {
+              background: rgba(255, 0, 0, 0.8);
+            }
+          }
+          & #closeBtn {
+            background: rgba(0, 0, 0, 0.6);
+            &:hover {
+              background: rgba(0, 0, 0, 0.8);
+            }
+          }
+        }
+
+      &.active {
+        display: flex;
+      }
+      & img {
+        max-width: 90vw;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      & .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.4);
+        border: none;
+        font-size: 24px;
+        padding: 10px;
+        size: 50px;
+        border-radius: 9999px;
+        cursor: pointer;
+        color: #000;
+        &.prev-btn { left: 20px; }
+        &.next-btn { right: 20px; }
+      }
+      & .change-index-container {
+        display: flex;
+        gap: 4px;
+        height: 32px;
+        padding: 4px 8px;
+        background: rgba(255, 255, 255, 1);
+        border-radius: 8px;
+        align-content: end;
+        & #changeIndex {
+          width: 60px;
+          border-radius: 5px;
+          background-color: white;
+          text-align: right;
+          border: none;
+          font-size: 20px;
+        }
+        & #totalIndex {
+          color: #666;
+          font-size: 16px;
+          width: fit-content;
+          height: 16px;
+          margin-top: auto;
+        }
+        & #changeBtn {
+          padding: 5px 10px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+          width: fit-content;
+          &:hover {
+            background-color: #0056b3;
+          }
+      }
+      }}
+      input:not([hidden]) {
+        all: unset;
+        &[type="number"]{
+          appearance: textfield;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>이미지 → PDF 생성기</h1>
+    <button id="generateBtn">PDF 생성 및 다운로드</button>
+    <div class="drop-zone" id="dropZone">
+      이곳에 이미지를 드래그하거나 클릭해서 선택하세요
+      <br />
+      <input type="file" id="imageInput" accept="image/*" multiple hidden />
+    </div>
+
+    <div class="preview-container" id="previewContainer"></div>
+
+    <div class="modal" id="imageModal">
+      <div class="remove-close-btn-container">
+        <button class="modal-remove-btn" id="modalRemoveBtn">제거</button>
+        <button id="closeBtn">닫기</button>
+      </div>
+      <button class="nav-btn prev-btn" id="prevBtn">←</button>
+      <img id="modalImage" src="" alt="미리보기" />
+      <button class="nav-btn next-btn" id="nextBtn">→</button>
+      <div class="change-index-container">
+        <input type="number" id="changeIndex" placeholder="인덱스" />
+        <span id="totalIndex"></span>
+        <button id="changeBtn">수정</button>
+      </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const imageInput = document.getElementById('imageInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const generateBtn = document.getElementById('generateBtn');
+        const changeIndexInput = document.getElementById('changeIndex');
+        const changeBtn = document.getElementById('changeBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+        let imageFiles = [];
+
+        changeBtn.addEventListener('click', handleChangeIndex);
+        closeBtn.addEventListener('click', () => {
+          imageModal.classList.remove('active');
+          modalImage.src = '';
+        });
+
+        // DropZone 클릭으로 파일 선택
+        dropZone.addEventListener('click', () => imageInput.click());
+
+        // 드래그 관련
+        dropZone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+          dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+          handleFiles(e.dataTransfer.files);
+        });
+
+        imageInput.addEventListener('change', (e) => {
+          handleFiles(e.target.files);
+        });
+
+        window.addEventListener("paste", (event) => {
+          handleFiles(event.clipboardData.files);
+        });
+
+        function handleFiles(files) {
+          const prevFilesCount = imageFiles.length;
+          Array.from(files).forEach((file, index) => {
+            if (!file.type.startsWith('image/')) return;
+            const fileIndex = prevFilesCount + index
+
+            imageFiles.push(file);
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+              const div = document.createElement('div');
+              div.className = 'preview';
+
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              img.dataset.index = fileIndex; // Store the index in the dataset
+              img.onclick = () => openModal(fileIndex); // Update to use the correct index
+
+              const removeButton = document.createElement('button');
+              removeButton.className = 'remove-btn';
+              removeButton.innerHTML = '×';
+
+              // 삭제 버튼 이벤트
+              removeButton.onclick = () => {
+                imageFiles.splice(fileIndex, 1); // Update to use fileIndex for correct removal
+                updatePreviewContainer();
+              };
+
+              div.appendChild(img);
+              div.appendChild(removeButton);
+              previewContainer.appendChild(div);
+            };
+
+            reader.onloadend = () => {
+              const sortedPreviews = Array.from(previewContainer.children)
+                .sort((a, b) => parseInt(a.querySelector('img').dataset.index) - parseInt(b.querySelector('img').dataset.index));
+              sortedPreviews.forEach(preview => previewContainer.appendChild(preview));
+            };
+
+            reader.readAsDataURL(file);
+          });
+        }
+
+        generateBtn.addEventListener('click', async () => {
+          if (imageFiles.length === 0) {
+            alert('이미지를 먼저 추가해주세요!');
+            return;
+          }
+          generateBtn.disabled = true;
+          const generateBtnInnerText = 'PDF 생성 중';
+          generateBtn.innerText = generateBtnInnerText;
+          const intervalId = setInterval(() => {
+            generateBtn.innerText.length < generateBtnInnerText.length + 3
+              ? generateBtn.innerText += '.'
+              : generateBtn.innerText = generateBtnInnerText;
+          }, 500);
+
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF();
+
+          for (let i = 0; i < imageFiles.length; i++) {
+            const file = imageFiles[i];
+            const dataURL = await readFileAsDataURL(file);
+            const img = new Image();
+
+            await new Promise((resolve) => {
+              img.onload = () => {
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+
+                const ratio = Math.min(pageWidth / img.width, pageHeight / img.height);
+                const imgWidth = img.width * ratio;
+                const imgHeight = img.height * ratio;
+                const x = (pageWidth - imgWidth) / 2;
+                const y = (pageHeight - imgHeight) / 2;
+
+                pdf.addImage(img, 'JPEG', x, y, imgWidth, imgHeight);
+                if (i < imageFiles.length - 1) pdf.addPage();
+                resolve();
+              };
+              img.src = dataURL;
+            });
+          }
+          const now = new Date();
+          const formattedDate = now.toISOString().slice(0, 10).replace(/-/g, '');
+          const formattedTime = now.toTimeString().slice(0, 8).replace(/:/g, '');
+          const formattedDateTime = `${formattedDate}_${formattedTime}`;
+          const defaultName = `${formattedDateTime}`;
+
+          const pdfName = prompt(`PDF 파일 이름을 입력하세요. 미입력시 '${defaultName}.pdf' 로 저장됩니다.`, defaultName);
+          console.log('pdfName:', pdfName);
+          if (pdfName !== null) {
+            pdf.save(`${pdfName || defaultName}.pdf`);
+          }
+          clearInterval(intervalId); // Clear the interval after saving the PDF
+          generateBtn.innerText = 'PDF 생성 및 다운로드';
+          generateBtn.disabled = false;
+        });
+
+        function readFileAsDataURL(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        }
+
+        const imageModal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      const modalRemoveBtn = document.getElementById('modalRemoveBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const totalIndex = document.getElementById('totalIndex');
+
+      let currentIndex = -1;
+
+      function openModal(index) {
+        currentIndex = index;
+        console.log('currentIndex:', currentIndex);
+        modalImage.src = URL.createObjectURL(imageFiles[currentIndex]);
+        imageModal.classList.add('active');
+        changeIndexInput.value = currentIndex + 1; // Set the input value to the current index
+        totalIndex.textContent = '/ ' + imageFiles.length;
+      }
+
+      function closeModal() {
+        imageModal.classList.remove('active');
+        modalImage.src = '';
+        changeIndexInput.value = ''; // Clear the input value when modal is closed
+      }
+
+      function updateModalImage() {
+        modalImage.src = URL.createObjectURL(imageFiles[currentIndex]);
+        changeIndexInput.value = currentIndex + 1; // Update the input value to the current index
+      }
+
+      function updatePreviewContainer() {
+        previewContainer.childNodes.forEach((child, index) => {
+          if (index >= imageFiles.length) {
+            child.remove(); // Remove excess children
+            return;
+          }
+          // rerender the image with the new source
+          child.querySelector('img').dataset.index = index;
+          child.querySelector('img').src = URL.createObjectURL(imageFiles[index]); // Update the image source
+          child.querySelector('img').alt = `미리보기 ${index + 1}`; // Update alt text
+          child.querySelector('.remove-btn').onclick = () => {
+            imageFiles.splice(index, 1);
+            updatePreviewContainer();
+          };
+        });
+
+      }
+
+      function handleChangeIndex() {
+          const newIndex = parseInt(changeIndexInput.value);
+          if (isNaN(newIndex) || newIndex <= 0 || newIndex > imageFiles.length) {
+            alert(`유효한 페이지 번호의 범위는 1 ~ ${imageFiles.length} 입니다.`);
+            return;
+          } else if (newIndex === currentIndex + 1) {
+            alert('현재 페이지와 동일한 페이지 번호입니다.');
+            return;
+          }
+          const currentPreview = previewContainer.children[currentIndex];
+          const newPreview = previewContainer.children[newIndex - 1]; // Adjusted to account for 0-based index
+
+          // Update the imageFiles array
+          const tempFileArray = Array.from(imageFiles);
+          // Remove the current file and insert it at the new index
+          tempFileArray.splice(newIndex - 1, 0, tempFileArray.splice(currentIndex, 1)[0]);
+          imageFiles = tempFileArray;
+
+          updatePreviewContainer();
+
+          currentIndex = newIndex - 1; // Update currentIndex to the new index
+          updateModalImage(); // Update the modal image
+      }
+
+      // 이미지 클릭 이벤트 연결 (기존 handleFiles 내부에 추가)
+      // img.onclick = () => openModal(index);
+
+      modalRemoveBtn.onclick = () => {
+        if (currentIndex >= 0) {
+          imageFiles.splice(currentIndex, 1);
+          updatePreviewContainer();
+        }
+        if (imageFiles.length > 0) {
+          currentIndex = (currentIndex - 1 + imageFiles.length) % imageFiles.length;
+          totalIndex.textContent = '/ ' + imageFiles.length;
+          updateModalImage();
+        } else {
+          closeModal();
+        }
+      };
+
+      prevBtn.onclick = () => {
+        if (imageFiles.length === 0) return;
+        currentIndex = (currentIndex - 1 + imageFiles.length) % imageFiles.length;
+        updateModalImage();
+      };
+
+      nextBtn.onclick = () => {
+        if (imageFiles.length === 0) return;
+        currentIndex = (currentIndex + 1) % imageFiles.length;
+        updateModalImage();
+      };
+
+      imageModal.onclick = (e) => {
+        if (e.target === imageModal) closeModal();
+      };
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+        if(e.key === 'ArrowLeft') prevBtn.click();
+        if(e.key === 'ArrowRight') nextBtn.click();
+      });
+
+      changeIndexInput.addEventListener('keydown', (e) => {
+        e.stopPropagation();
+        if (e.key === 'Enter') {
+          handleChangeIndex();
+        }
+        if (e.key === 'Escape') {
+          changeIndexInput.blur();
+          imageModal.focus();
+        }
+      });
+    </script>
+  </body>
+</html>
