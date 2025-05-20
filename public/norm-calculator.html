@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>직각삼각형 계산기</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+      main {
+        max-width: 300px;
+        display: flex;
+        height: 100svh;
+        flex-direction: column;
+        align-items: center;
+      }
+      label {
+        display: flex;
+        margin-top: 10px;
+        align-items: baseline;
+        &>input {
+          flex: 1;
+          padding: 5px;
+          margin-top: 5px;
+        }
+        &>span {
+          display: block;
+          margin-right: 5px;
+        }
+      }
+      .result {
+        margin-top: 15px;
+        font-weight: bold;
+      }
+      .formula {
+        font-family: monospace;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="formula">c² = a² + b²<br />c = √(a² + b²)</div>
+
+      <label><span>a = </span><input type="number" id="a" step="any" /></label>
+      <label><span>b = </span><input type="number" id="b" step="any" /></label>
+      <label><span>c = </span><input type="number" id="c" step="any" /></label>
+
+      <div class="result" id="result"></div>
+    </main>
+
+    <script>
+      const fields = ['a', 'b', 'c'];
+      const values = { a: NaN, b: NaN, c: NaN };
+      const history = { a: null, b: null, c: null };
+
+      fields.forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+          const val = parseFloat(document.getElementById(id).value);
+          values[id] = isNaN(val) ? NaN : val;
+          history[id] = new Date();
+          calculateFromRecent();
+        });
+      });
+
+      function calculateFromRecent() {
+        const result = document.getElementById('result');
+
+        const sorted = fields
+          .filter(f => history[f] instanceof Date)
+          .sort((a, b) => history[b] - history[a]);
+
+        if (sorted.length < 2) {
+          result.textContent = '';
+          return;
+        }
+
+        const [f1, f2] = sorted;
+        const missing = fields.find(f => f !== f1 && f !== f2);
+        const v1 = values[f1];
+        const v2 = values[f2];
+
+        if (isNaN(v1) || isNaN(v2)) {
+          result.textContent = '';
+          return;
+        }
+
+        let value;
+        if (missing === 'c') {
+          value = Math.sqrt(values['a'] ** 2 + values['b'] ** 2);
+          document.getElementById('c').value = value.toFixed(4);
+          result.textContent = `c = ${value.toFixed(4)}`;
+        } else if (missing === 'a') {
+          if (values['c'] <= values['b']) {
+            result.textContent = 'c는 b보다 커야 합니다.';
+            return;
+          }
+          value = Math.sqrt(values['c'] ** 2 - values['b'] ** 2);
+          document.getElementById('a').value = value.toFixed(4);
+          result.textContent = `a = ${value.toFixed(4)}`;
+        } else if (missing === 'b') {
+          if (values['c'] <= values['a']) {
+            result.textContent = 'c는 a보다 커야 합니다.';
+            return;
+          }
+          value = Math.sqrt(values['c'] ** 2 - values['a'] ** 2);
+          document.getElementById('b').value = value.toFixed(4);
+          result.textContent = `b = ${value.toFixed(4)}`;
+        }
+      }
+    </script>
+  </body>
+</html>
