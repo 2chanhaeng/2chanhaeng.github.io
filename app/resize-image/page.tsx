@@ -9,6 +9,7 @@ export default function ResizeImagePage() {
   const [originalName, setOriginalName] = useState("");
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+  const [lockRatio, setLockRatio] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +30,28 @@ export default function ResizeImagePage() {
     reader.readAsDataURL(file);
   };
 
+  const handleWidthChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const curr = Number(e.target.value);
+    if (curr <= 0) return;
+    const ratio = curr / width;
+    setWidth(curr);
+    if (lockRatio) {
+      setHeight((p) => Math.round(ratio * p));
+    }
+  };
+  const handleHeightChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const curr = Number(e.target.value);
+    if (curr <= 0) return;
+    const ratio = curr / height;
+    setHeight(curr);
+    if (lockRatio) {
+      setWidth((p) => Math.round(ratio * p));
+    }
+  };
+  const handleLockChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLockRatio(e.target.checked);
+  };
+
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-4">
       <h1 className="text-2xl font-bold mb-6">이미지 사이즈 변경기</h1>
@@ -37,8 +60,10 @@ export default function ResizeImagePage() {
         height={height}
         src={src}
         onFileChange={handleFileChange}
-        onWidthChange={(e) => setWidth(+e.target.value)}
-        onHeightChange={(e) => setHeight(+e.target.value)}
+        onWidthChange={handleWidthChange}
+        onHeightChange={handleHeightChange}
+        lockRatio={lockRatio}
+        onLockChange={handleLockChange}
       />
       <SaveButtons origin={originalName} canvasRef={canvasRef} src={src} />
       <ImageCanvas
@@ -59,6 +84,8 @@ function ImageForm({
   onFileChange,
   onWidthChange,
   onHeightChange,
+  lockRatio,
+  onLockChange,
 }: {
   width: number;
   height: number;
@@ -66,6 +93,8 @@ function ImageForm({
   onFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onWidthChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onHeightChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  lockRatio: boolean;
+  onLockChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <form className="flex flex-col items-stretch gap-4 mb-8 max-w-md">
@@ -73,12 +102,21 @@ function ImageForm({
       {src && (
         <>
           <label>
-            폭(px):
+            가로(px):
             <Input type="number" value={width} onChange={onWidthChange} />
           </label>
           <label>
-            높이(px):
+            세로(px):
             <Input type="number" value={height} onChange={onHeightChange} />
+          </label>
+          <label>
+            가로세로비 고정:
+            <input
+              type="checkbox"
+              checked={lockRatio}
+              onChange={onLockChange}
+              className="ml-2"
+            />
           </label>
         </>
       )}
@@ -104,10 +142,6 @@ function ImageCanvas({
     img.onload = () => {
       if (!canvasRef.current) {
         console.error("Canvas ref is not set");
-        console.log({
-          ref: canvasRef,
-          img,
-        });
         throw new Error("Canvas ref is not set");
       }
       const canvas = canvasRef.current;
