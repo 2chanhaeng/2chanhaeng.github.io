@@ -108,4 +108,10 @@ span.icon-link::before {
   body {
     @apply bg-bg text-fg break-keep break-words;
   }
+  input {
+    @apply text-bg bg-fg;
+    &[type="number"] {
+      appearance: textfield;
+    }
+  }
 }
